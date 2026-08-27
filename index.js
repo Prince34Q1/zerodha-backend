@@ -22,6 +22,11 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("Zerodha Backend is running!");
+});
+
 app.get("/allHoldings", authMiddleware, async (req, res) => {
   const userId = req.user.userId;
 
@@ -73,7 +78,6 @@ app.post("/funds/add", authMiddleware, async (req, res) => {
   }
 
   user.balance += amount;
-
   await user.save();
 
   res.json({
@@ -107,7 +111,6 @@ app.post("/funds/withdraw", authMiddleware, async (req, res) => {
   }
 
   user.balance -= amount;
-
   await user.save();
 
   res.json({
@@ -118,6 +121,7 @@ app.post("/funds/withdraw", authMiddleware, async (req, res) => {
 
 app.post("/newOrder", authMiddleware, async (req, res) => {
   const userId = req.user.userId;
+
   const { name, qty, price, mode } = req.body;
 
   const quantity = Number(qty);
@@ -172,7 +176,6 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
     }
 
     user.balance -= totalAmount;
-
     await user.save();
 
     let holding = await HoldingsModel.findOne({
@@ -284,7 +287,6 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
     }
 
     user.balance += totalAmount;
-
     await user.save();
   }
 
